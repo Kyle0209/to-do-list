@@ -1,13 +1,13 @@
-let loginValidator = (req, res, next) => {
-    if( req.session.userInfo ) {
-        next();
-    }
-
-    else {
+let isLogined = (req, res, next) => {
+    if( !req.session.userInfo || !req.session.userInfo.isLogined ) {
         res.redirect("/login");
+    }
+    
+    else {
+        next();
     }
 }
 
 module.exports = {
-    loginValidator : loginValidator
+    isLogined : isLogined
 };

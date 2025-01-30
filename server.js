@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express"); // Node.js的框架
 const app = express();
-const hbs = require("hbs");
+const hbs = require("hbs"); // npm install hbs
 const path = require("path")
 
-const validator = require("./utils/validator");
+const bodyParser = require("body-parser"); // npm install body-parser -> 用來解析post的body
 
 const apiDocs       = require("./router/api-docs");
 const toDoListRouter = require("./router/to-do-list");
@@ -24,7 +24,7 @@ app.use( express.static(path.join(__dirname, "application")));
 // app.use("/about", aboutRouter);
 ////////////
 
-app.use(validator.loginValidator);
+// app.use(validator.loginValidator);
 
 app.use(`/api-docs`,apiDocs);
 app.use("/to-do-list",toDoListRouter);
