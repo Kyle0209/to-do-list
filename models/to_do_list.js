@@ -13,7 +13,7 @@ const missionSchema = new mongoose.Schema({
     author          : String,
     content         : String,
     level           : Number,
-    attachment      : [String]
+    attachments      : [String] 
 },{
     collection      : "missions",
     strict          : true, // 嚴格模式，排除未定義欄位

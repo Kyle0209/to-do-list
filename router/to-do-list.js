@@ -49,14 +49,14 @@ router.get("/detail/:to_do_id", async (req, res) => {
 router.post("/detail/:to_do_id", async (req, res) => {
     let to_do_id = req.params.to_do_id;
     let newData = req.body;
-    console.log("\nnew : " + JSON.stringify(newData) + "\n");
-    try{
+    // console.log("\nnew : " + JSON.stringify(newData) + "\n");
+    try{ 
         let id = await model.to_do_list.findOne({to_do_id});
         if(!id){
-            let newId = await model.to_do_list.find().sort({to_do_id : -1}).limit(1);
-            req.body.todo_id = newId[0].to_do_id + 1;
+            req.body.todo_id = req.params.to_do_id;
             let result = await model.to_do_list.create(req.body);
-            console.log("new : " + result);
+            // console.log("new : " + result);
+            res.status(200).json({message : "ok."});
         }
         else{
             let result = await model.to_do_list.updateOne({to_do_id}, req.body)
@@ -72,9 +72,9 @@ router.get("/the-newest-id", async (req, res) => {
     try{
         let result = await model.to_do_list.find().sort({to_do_id : -1}).limit(1);
         let newestId = result[0].to_do_id;
-        newestId = newestId.trim();
-        console.log(typeof newestId);
-        console.log("   : " + newestId);
+        newestId = String(Number(newestId) + 1);
+        // console.log(typeof newestId);
+        // console.log("   : " + newestId);
         res.status(200).json({result : newestId});
     }catch(err){
         console.log(err);
