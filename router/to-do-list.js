@@ -82,4 +82,17 @@ router.get("/the-newest-id", async (req, res) => {
     }    
 })
 
+
+router.delete("/detail/:to_do_id", async (req, res) => {
+    try{
+        let result = await model.to_do_list.deleteOne({to_do_id : req.params.to_do_id});
+        if(!(result.deleteCount === 0)){
+            res.status(200).json({message: "ok.", "affectedRows": result.deleteCount});
+        }
+        else throw new Error("delete Fail.");
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message : "server err."});
+    }  
+})
 module.exports = router;
