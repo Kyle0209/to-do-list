@@ -3,10 +3,12 @@ const app = express();
 const hbs = require("hbs"); // npm install hbs
 const path = require("path")
 
-const bodyParser = require("body-parser"); // npm install body-parser -> 用來解析post的body
-
 const apiDocs       = require("./router/api-docs");
 const toDoListRouter = require("./router/to-do-list");
+
+// 解析 JSON 和 URL-encoded 資料
+app.use(express.json());  // 解析 JSON
+app.use(express.urlencoded({ extended: true })); // 解析 form data
 
 app.engine("html", hbs.__express);
 
