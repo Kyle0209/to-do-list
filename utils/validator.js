@@ -1,3 +1,4 @@
+const model = require("../models");
 const typeList = ["犯罪", "殭屍", "全", "愛情", "政治", "其他"];
 
 // 1.加入參數檢查
@@ -29,7 +30,7 @@ let isTypeValid = (req, res, next) => {
     }
 }
 
-const user1 = {"account" : "kyle", "passwd" : "0209"};
+
 
 // 檢查欄位
 let checkAccountAndPasswd = (req, res, next) => {
@@ -41,17 +42,23 @@ let checkAccountAndPasswd = (req, res, next) => {
 }
 
 // 對比資料
-let isUserValid = (req, res, next) => {
-    if( req.body["account"] === user1["account"] ){    
-        if( req.body["passwd"] === user1["passwd"] ){
-            // res.json({"message" : `Welcome ${req.body["account"]}`});
-            next();
-            return;
-        }
-        res.status(403).json({"message" : "密碼錯誤"});
+let isUserValid = async (req, res, next) => {
+    console.log(req.body);
+    let account = req.body.account;
+    let user = await model.members.findOne({account}, {_id : 0});
+    console.log(user)
+    if( !user ){    
+        res.status(403).json({"message" : "帳號錯誤"});
         return;
     }
-    res.status(403).json({"message" : "帳號錯誤"});
+    
+    else if( req.body.passwd !== user.passwd ){
+        res.status(403).json({"message" : "密碼錯誤"});
+        // res.json({"message" : `Welcome ${req.body["account"]}`});
+        return; 
+    }
+
+    next();
 }
 
 // 紀錄資訊至session
@@ -61,7 +68,6 @@ let setSessionInfo = (req, res, next) => {
         name : req.body.account,
         isLogined : true,
     };
-
     next();
 }
 

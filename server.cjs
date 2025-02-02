@@ -2,27 +2,28 @@ const express = require("express"); // Node.js的框架
 const app = express();
 const hbs = require("hbs"); // npm install hbs
 const path = require("path")
-const session = require("express-session");
 const validator = require("./utils/validator");
 
 const apiDocs       = require("./router/api-docs");
 const toDoListRouter = require("./router/to-do-list");
 
 // Redis 
-const { createClient } = require("redis");
-const client = createClient();
-client.connect();
-const redisStore = require("connect-redis")(session);
+const session = require("express-session");
+const redis = require("redis");
+// 初始化 RedisStore
+const RedisStore = require("connect-redis")(session);
+const redisClient = redis.createClient();
 
 app.use(session({
-  // session外存[3] 設定好redisStore
-  store : new redisStore({ client }), // session資料存放的地方
-  secret : "c90dis90#",   // session資料加密使用
-  resave : true,          // 回存store; true: 不論修改與否都存 ; false: 修改才存
-  saveUninitialized : false,  // 初始化的session是否存到store
-  name : "_test_",        // clokie的key值
-  ttl : 24*60*60*1        // session有效時間
-}))
+  store: new RedisStore({ client: redisClient }),
+  secret: "c90dis90#",
+  resave: true,
+  saveUninitialized: false,
+  name: "_test_",
+  cookie: { 
+      maxAge: 24 * 60 * 60 * 1000  // 24小時
+  }
+}));
 
 // 解析 JSON 和 URL-encoded 資料
 app.use(express.json());  // 解析 JSON
@@ -35,16 +36,19 @@ app.set("views", path.join(__dirname, "application", "views"));
 app.use( express.static(path.join(__dirname, "application")));
 
 //// Model 部分建立完 , 再開啟即可使用
-// const dramasRouter   = require("./router/dramas");
+const dramasRouter   = require("./router/dramas.controllers");
 // const imagesRouter   = require("./router/images");
-// const aboutRouter    = require("./router/about");
+const aboutRouter    = require("./router/about");
+const authRouter = require("./router/auth");
 
-// app.use("/dramas",dramasRouter);
+app.use("/dramas",dramasRouter);
 // app.use("/images",imagesRouter);
-// app.use("/about", aboutRouter);
+app.use("/about", aboutRouter);
+app.use("/auth", authRouter);
 ////////////
 
 // app.use(validator.loginValidator);
+app.use(`/api-docs`,apiDocs);
 
 app.get("/login", (req, res) => {
   res.render("login.html")
@@ -59,13 +63,12 @@ app.get("/logout", (req, res) => {
 app.use(validator.isLogined);
 
 
-app.use(`/api-docs`,apiDocs);
 app.use("/to-do-list",toDoListRouter);
 
 
 
 app.get("/",(req,res)=>{
-  res.send("Hello world!");
+  res.redirect("/to-do-list/page/list");
 });
 
 
