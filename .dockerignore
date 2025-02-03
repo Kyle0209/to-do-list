@@ -1,0 +1,6 @@
+node_modules
+misc
+.gitignore
+.git
+mongoDB-server
+mongoDB_data

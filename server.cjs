@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express"); // Node.js的框架
 const app = express();
 const hbs = require("hbs"); // npm install hbs
@@ -13,10 +14,13 @@ const redis = require("redis");
 // 初始化 RedisStore
 const RedisStore = require("connect-redis")(session);
 const redisClient = redis.createClient();
+// {url: process.env.REDIS_URL}
+
+// redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: "c90dis90#",
+  store: new RedisStore({ client : redisClient }),
+  secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: false,
   name: "_test_",

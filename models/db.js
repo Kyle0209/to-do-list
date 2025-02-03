@@ -6,9 +6,17 @@ const mongoose = require("mongoose");
 // 使用IPv4 : "127.0.0.1:27017"
 // ? IPv4/ IPv6 ?
 // *連線設定值:"mongodb://{host_ip}:{port}/{db_name}"
-const connConfig = "mongodb://127.0.0.1:27017/to-do-list";
+const connConfig = process.env.MONGO_URL;
+if (!connConfig) {
+  console.error('MONGO_URL is not defined in .env file');
+  process.exit(1);
+}
 const conn = mongoose.createConnection(connConfig,
-    {maxPoolSize : 5}
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        maxPoolSize: 5
+    }
 );
 
 console.log("trying to connect...");
