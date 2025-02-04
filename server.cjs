@@ -7,6 +7,7 @@ const validator = require("./utils/validator");
 
 const apiDocs       = require("./router/api-docs");
 const toDoListRouter = require("./router/to-do-list");
+const PORT = process.env.PORT || 8088;
 
 // Redis 
 const session = require("express-session");
@@ -85,6 +86,6 @@ app.use((req,res)=>{
 
 
 
-app.listen(8088,function(){
-    console.log("Server is running at http://localhost:" + String(8088));
+app.listen(PORT, '0.0.0.0',function(){
+    console.log("Server is running at port:" + PORT);
 });

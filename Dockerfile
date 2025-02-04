@@ -8,6 +8,7 @@ RUN npm install
 # 複製所有檔案到容器中
 COPY . .
 
+ENV PORT=8088
 # 暴露應用運行端口
 EXPOSE 8088
 
