@@ -11,9 +11,12 @@ const toDoListRouter = require("./router/to-do-list");
 // Redis 
 const session = require("express-session");
 const redis = require("redis");
+
+
 // 初始化 RedisStore
 const RedisStore = require("connect-redis")(session);
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({url : "rediss://default:AWckAAIjcDFkYTk2M2YyZDcyNGE0ZjU3YjFjNTJjZTIxNDk0ZTRjZHAxMA@pro-lamprey-26404.upstash.io:6379"});
+redisClient.on('error', err => console.error('Redis Client Error', err));
 // {url: process.env.REDIS_URL}
 
 // redisClient.on('error', (err) => console.error('Redis Client Error', err));
